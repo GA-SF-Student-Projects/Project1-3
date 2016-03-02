@@ -1,5 +1,6 @@
 package com.example.adao1.project1;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -22,6 +23,11 @@ public class MainActivity extends AppCompatActivity {
     EditText editText;
     ArrayList<String> firstList;
     ArrayAdapter<String> arrayAdapter;
+    static boolean editCheck = false;
+    static int editCheckIndex;
+    static View currentEditView;
+    static Drawable currentBackground;
+    FloatingActionButton removeButton;
 
 
 
@@ -33,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
         //Initialization
         listView = (ListView)findViewById(R.id.listViewid);
         editText = (EditText)findViewById(R.id.editTextid);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        removeButton = (FloatingActionButton) findViewById(R.id.fabrm);
+
         firstList = new ArrayList<>();
         firstList.add("List element 1");
         firstList.add("List element 2");
@@ -56,9 +65,13 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                removeButton.setVisibility(View.VISIBLE);
                 editText.setText(firstList.get(position));
-                editText.setBackgroundResource(android.R.color.holo_blue_light);
-                //listView.item
+                currentBackground=view.getBackground();
+                view.setBackgroundResource(android.R.color.holo_blue_light);
+                currentEditView = view;
+                editCheck = true;
+                editCheckIndex = position;
 
                 return false;
             }
@@ -69,15 +82,37 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //Floating Button
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        //Floating Add button
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                firstList.add(editText.getText().toString());
-                arrayAdapter.notifyDataSetChanged();
-                editText.setText("");
 
+                if(editCheck){
+                    firstList.set(editCheckIndex,editText.getText().toString());
+                    editCheck = false;
+                    arrayAdapter.notifyDataSetChanged();
+                    editText.setText("");
+                    currentEditView.setBackground(currentBackground);
+                }
+                else {
+                    firstList.add(editText.getText().toString());
+                    arrayAdapter.notifyDataSetChanged();
+                    editText.setText("");
+                }
+
+            }
+        });
+
+        //Floating Remove button
+        removeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                firstList.remove(editCheckIndex);
+                arrayAdapter.notifyDataSetChanged();
+                removeButton.setVisibility(View.INVISIBLE);
+                editCheck=false;
+                editText.setText("");
+                currentEditView.setBackground(currentBackground);
             }
         });
 

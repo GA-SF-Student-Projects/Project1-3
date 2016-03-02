@@ -1,10 +1,12 @@
 package com.example.adao1.project1;
 
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -22,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> firstList;
     ArrayAdapter<String> arrayAdapter;
     static boolean editCheck = false;
+    static boolean strikeThrough = false;
     static int editCheckIndex;
     static View currentEditView;
     static Drawable currentBackground;
@@ -52,7 +56,15 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                TextView row = (TextView)view;
+                if (!strikeThrough){
+                    row.setPaintFlags(row.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
+                    strikeThrough = true;
+                }
+                else {
+                    row.setPaintFlags(0);
+                    strikeThrough=false;
+                }
             }
         });
 
@@ -87,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
                     arrayAdapter.notifyDataSetChanged();
                     editText.setText("");
                     currentEditView.setBackground(currentBackground);
+                    removeButton.setVisibility(View.INVISIBLE);
                 } else {
                     firstList.add(editText.getText().toString());
                     arrayAdapter.notifyDataSetChanged();

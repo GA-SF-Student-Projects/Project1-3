@@ -22,7 +22,8 @@
                 android:id="@+id/listViewid"
                 android:layout_width="match_parent"
                 android:layout_height="305dp"
-                android:layout_weight="0.73">
+                android:layout_weight="0.73"
+                >
 
             </ListView>
 
@@ -37,6 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:background="#d3d3d3"/>
     </RelativeLayout>
 </LinearLayout>

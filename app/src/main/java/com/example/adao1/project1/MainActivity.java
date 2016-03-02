@@ -3,7 +3,6 @@ package com.example.adao1.project1;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -15,7 +14,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     static int editCheckIndex;
     static View currentEditView;
     static Drawable currentBackground;
+    FloatingActionButton addButton;
     FloatingActionButton removeButton;
 
 
@@ -39,19 +38,15 @@ public class MainActivity extends AppCompatActivity {
         //Initialization
         listView = (ListView)findViewById(R.id.listViewid);
         editText = (EditText)findViewById(R.id.editTextid);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        addButton = (FloatingActionButton) findViewById(R.id.fab);
         removeButton = (FloatingActionButton) findViewById(R.id.fabrm);
-
         firstList = new ArrayList<>();
-        firstList.add("List element 1");
-        firstList.add("List element 2");
-        firstList.add("List element 3");
-        firstList.add("List element 4");
         arrayAdapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1, firstList);
 
-
+        //Array to adapter to listView
+        fillArray();
+        arrayAdapter.notifyDataSetChanged();
         listView.setAdapter(arrayAdapter);
-
 
         //OnItemClickLister
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -77,24 +72,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         //Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         //Floating Add button
-        fab.setOnClickListener(new View.OnClickListener() {
+        addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if(editCheck){
-                    firstList.set(editCheckIndex,editText.getText().toString());
+                if (editCheck) {
+                    firstList.set(editCheckIndex, editText.getText().toString());
                     editCheck = false;
                     arrayAdapter.notifyDataSetChanged();
                     editText.setText("");
                     currentEditView.setBackground(currentBackground);
-                }
-                else {
+                } else {
                     firstList.add(editText.getText().toString());
                     arrayAdapter.notifyDataSetChanged();
                     editText.setText("");
@@ -110,14 +103,19 @@ public class MainActivity extends AppCompatActivity {
                 firstList.remove(editCheckIndex);
                 arrayAdapter.notifyDataSetChanged();
                 removeButton.setVisibility(View.INVISIBLE);
-                editCheck=false;
+                editCheck = false;
                 editText.setText("");
                 currentEditView.setBackground(currentBackground);
             }
         });
+    }
 
-
-
+    //Temp fill array
+    public void fillArray(){
+        firstList.add("List element 1");
+        firstList.add("List element 2");
+        firstList.add("List element 3");
+        firstList.add("List element 4");
     }
 
     @Override

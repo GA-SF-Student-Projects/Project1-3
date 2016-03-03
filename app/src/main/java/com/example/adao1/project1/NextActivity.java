@@ -25,9 +25,7 @@ public class NextActivity extends AppCompatActivity {
     ArrayList<ListObject> objectList2;
     ListObject itemObject2;
     static boolean editCheck2 = false;
-    static boolean strikeThrough = false;
     static int editCheckIndex2;
-    static int passedIndexNumber;
     static View currentEditView2;
     static Drawable currentBackground2;
     FloatingActionButton addButton2;
@@ -45,7 +43,6 @@ public class NextActivity extends AppCompatActivity {
         editText2 = (EditText)findViewById(R.id.editTextid);
         addButton2 = (FloatingActionButton) findViewById(R.id.fab);
         removeButton2 = (FloatingActionButton) findViewById(R.id.fabrm);
-        //passedIndexNumber = getIntent().getExtras().getInt("KEY");
         secondList = new ArrayList<>();
         objectList2 = new ArrayList<>();
         secondList = getIntent().getStringArrayListExtra("KEY");
@@ -128,12 +125,13 @@ public class NextActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 secondList.remove(editCheckIndex2);
+                objectList2.remove(editCheckIndex2);
                 arrayAdapter2.notifyDataSetChanged();
                 removeButton2.setVisibility(View.INVISIBLE);
                 editCheck2 = false;
                 editText2.setText("");
                 currentEditView2.setBackground(currentBackground2);
-                objectList2.remove(editCheckIndex2);
+
             }
         });
 

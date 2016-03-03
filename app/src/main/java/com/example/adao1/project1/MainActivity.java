@@ -140,6 +140,8 @@ public class MainActivity extends AppCompatActivity {
                 editCheck = false;
                 editText.setText("");
                 currentEditView.setBackground(currentBackground);
+                objectList.remove(editCheckIndex);
+
             }
         });
     }

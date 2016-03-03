@@ -133,6 +133,7 @@ public class NextActivity extends AppCompatActivity {
                 editCheck2 = false;
                 editText2.setText("");
                 currentEditView2.setBackground(currentBackground2);
+                objectList2.remove(editCheckIndex2);
             }
         });
 

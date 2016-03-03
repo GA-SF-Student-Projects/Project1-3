@@ -19,8 +19,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SecondList"
-            android:label="@string/title_activity_second_list"
+            android:name=".NextActivity"
+            android:label="Next page"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

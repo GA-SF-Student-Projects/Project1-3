@@ -1,26 +1,33 @@
 package com.example.adao1.project1;
 
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class SecondList extends AppCompatActivity {
+public class NextActivity extends AppCompatActivity {
 
     ListView listView2;
     EditText editText2;
     ArrayList<String> secondList;
     ArrayAdapter<String> arrayAdapter2;
+    ArrayList<ListObject> objectList2;
+    ListObject itemObject2;
     static boolean editCheck2 = false;
+    static boolean strikeThrough = false;
     static int editCheckIndex2;
+    static int passedIndexNumber;
     static View currentEditView2;
     static Drawable currentBackground2;
     FloatingActionButton addButton2;
@@ -38,16 +45,16 @@ public class SecondList extends AppCompatActivity {
         editText2 = (EditText)findViewById(R.id.editTextid);
         addButton2 = (FloatingActionButton) findViewById(R.id.fab);
         removeButton2 = (FloatingActionButton) findViewById(R.id.fabrm);
-
+        //passedIndexNumber = getIntent().getExtras().getInt("KEY");
         secondList = new ArrayList<>();
-        secondList.add("List element 1");
-        secondList.add("List element 2");
-        secondList.add("List element 3");
-        secondList.add("List element 4");
-        arrayAdapter2 = new ArrayAdapter<String>(SecondList.this,android.R.layout.simple_list_item_1, secondList);
-
+        objectList2 = new ArrayList<>();
+        secondList = getIntent().getStringArrayListExtra("KEY");
+        arrayAdapter2 = new ArrayAdapter<String>(NextActivity.this,android.R.layout.simple_list_item_1, secondList);
+        Log.d("NextActivity","Check if secondList got it ");
 
         listView2.setAdapter(arrayAdapter2);
+        arrayAdapter2.notifyDataSetChanged();
+        Log.d("NextActivity", "Post-adapter");
 
 
         //OnItemClickLister
@@ -55,6 +62,17 @@ public class SecondList extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+
+                //StrikeThrough
+                TextView row = (TextView)view;
+                if (!objectList2.get(position).isStrikeThrough()){
+                    row.setPaintFlags(row.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
+                    objectList2.get(position).changeStrikeThrough(true);
+                }
+                else {
+                    row.setPaintFlags(0);
+                    objectList2.get(position).changeStrikeThrough(false);
+                }
             }
         });
 
@@ -83,6 +101,7 @@ public class SecondList extends AppCompatActivity {
         addButton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String currentText = editText2.getText().toString();
 
                 if (editCheck2) {
                     secondList.set(editCheckIndex2, editText2.getText().toString());
@@ -90,10 +109,15 @@ public class SecondList extends AppCompatActivity {
                     arrayAdapter2.notifyDataSetChanged();
                     editText2.setText("");
                     currentEditView2.setBackground(currentBackground2);
+                    itemObject2 = new ListObject(currentText,false);
+                    objectList2.set(editCheckIndex2, itemObject2);
+
                 } else {
                     secondList.add(editText2.getText().toString());
                     arrayAdapter2.notifyDataSetChanged();
                     editText2.setText("");
+                    itemObject2 = new ListObject(currentText,false);
+                    objectList2.add(itemObject2);
                 }
 
             }

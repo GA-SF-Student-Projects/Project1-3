@@ -1,8 +1,10 @@
 package com.example.adao1.project1;
 
+import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Debug;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -22,15 +24,19 @@ public class MainActivity extends AppCompatActivity {
 
     ListView listView;
     EditText editText;
-    ArrayList<String> firstList;
+    ListObject itemObject;//ListObject of each item of first list; holds Title and secondList
+    ArrayList<String> firstList; //List of lists on the first page
+    ArrayList<String> testList; //List of lists on the first page
+    //ArrayList<String> secondList;//The different lists on the second page
+    ArrayList<ListObject> objectList; //List that holds the object of ListObject of each item
     ArrayAdapter<String> arrayAdapter;
     static boolean editCheck = false;
-    static boolean strikeThrough = false;
     static int editCheckIndex;
     static View currentEditView;
     static Drawable currentBackground;
     FloatingActionButton addButton;
     FloatingActionButton removeButton;
+    Intent intent;
 
 
 
@@ -45,10 +51,21 @@ public class MainActivity extends AppCompatActivity {
         addButton = (FloatingActionButton) findViewById(R.id.fab);
         removeButton = (FloatingActionButton) findViewById(R.id.fabrm);
         firstList = new ArrayList<>();
+        //secondList = new ArrayList<>();
+        testList = new ArrayList<>();//testing
         arrayAdapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1, firstList);
+        intent = new Intent(this, NextActivity.class);
+        //itemObject = new ListObject("",secondList);
+        objectList = new ArrayList<>();
+
 
         //Array to adapter to listView
-        fillArray();
+        fillArray();//testing
+        testList.add("yay");//testing
+        testList.add("it");//testing
+        testList.add("works"); //testing
+
+
         arrayAdapter.notifyDataSetChanged();
         listView.setAdapter(arrayAdapter);
 
@@ -56,15 +73,13 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TextView row = (TextView)view;
-                if (!strikeThrough){
-                    row.setPaintFlags(row.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
-                    strikeThrough = true;
-                }
-                else {
-                    row.setPaintFlags(0);
-                    strikeThrough=false;
-                }
+                ArrayList<String> sendArray = new ArrayList<String>();
+                //objectList.get(0).setListArray(testList); //testing
+                sendArray = objectList.get(position).getListArray();
+
+                //intent.putExtra("KEY",objectList.get(position).getListTitle());
+                intent.putExtra("KEY",sendArray);
+                startActivity(intent);
             }
         });
 
@@ -74,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 removeButton.setVisibility(View.VISIBLE);
                 editText.setText(firstList.get(position));
-                currentBackground=view.getBackground();
+                currentBackground = view.getBackground();
                 view.setBackgroundResource(android.R.color.holo_blue_light);
                 currentEditView = view;
                 editCheck = true;
@@ -92,19 +107,25 @@ public class MainActivity extends AppCompatActivity {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                String currentText = editText.getText().toString();
                 if (editCheck) {
-                    firstList.set(editCheckIndex, editText.getText().toString());
+                    firstList.set(editCheckIndex, currentText);
                     editCheck = false;
                     arrayAdapter.notifyDataSetChanged();
                     editText.setText("");
                     currentEditView.setBackground(currentBackground);
                     removeButton.setVisibility(View.INVISIBLE);
+                    itemObject = new ListObject(currentText);
+                    objectList.set(editCheckIndex, itemObject);
                 } else {
-                    firstList.add(editText.getText().toString());
+                    firstList.add(currentText);
                     arrayAdapter.notifyDataSetChanged();
                     editText.setText("");
+                    itemObject = new ListObject(currentText);
+                    objectList.add(itemObject);
                 }
+
+
 
             }
         });
@@ -125,10 +146,8 @@ public class MainActivity extends AppCompatActivity {
 
     //Temp fill array
     public void fillArray(){
-        firstList.add("List element 1");
-        firstList.add("List element 2");
-        firstList.add("List element 3");
-        firstList.add("List element 4");
+       // firstList.add("List element 1"); //testing
+        //objectList.add(0,new ListObject("List element 1"));//testing
     }
 
     @Override

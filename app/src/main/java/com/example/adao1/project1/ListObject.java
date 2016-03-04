@@ -7,7 +7,6 @@ import java.util.ArrayList;
  */
 public class ListObject {
     private ArrayList<String> listArray;
-    private int listLength;
     private String listTitle;
     private boolean isStrikeThrough;
 
@@ -36,10 +35,6 @@ public class ListObject {
 
     public void setListArray(ArrayList<String> listArray) {
         this.listArray = listArray;
-    }
-
-    public int getListLength() {
-        return listArray.size();
     }
 
     public String getListTitle() {

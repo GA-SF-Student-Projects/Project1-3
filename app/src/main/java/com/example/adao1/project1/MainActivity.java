@@ -22,25 +22,25 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    static int REQUEST_CODE = 1;
-    ListView listView;
-    EditText editText;
-    ListObject itemObject;//ListObject of each item of first list; holds Title and secondList
-    ArrayList<String> firstList; //List of lists on the first page
-    ArrayList<String> testList; //List of lists on the first page
-    ArrayList<String> secondList;//The different lists on the second page
-    ArrayList<ListObject> objectList; //List that holds the object of ListObject of each item
-    ArrayAdapter<String> arrayAdapter;
-    static boolean editCheck = false;
-    static int editCheckIndex;
-    static int currentPosition;
-    static View currentEditView;
-    static Drawable currentBackground;
-    FloatingActionButton addButton;
-    FloatingActionButton removeButton;
-    Intent intent;
-
-
+    public static final int REQUEST_CODE = 1;
+    public static final String TITLE_KEY = "TITLEKEY";
+    public static final String ARRAY_KEY = "ARRAYKEY";
+    private static ListView listView;
+    private static EditText editText;
+    private static View currentEditView;
+    private static Drawable currentBackground;
+    private static FloatingActionButton addButton;
+    private static FloatingActionButton removeButton;
+    private static Intent intent;
+    private static ListObject itemObject;//ListObject of each item of first list; holds Title and secondList
+    private static ArrayList<String> firstList; //List of lists on the first page
+    private static ArrayList<String> secondList;//The different lists on the second page
+    private static ArrayList<String> sendArray;
+    private static ArrayList<ListObject> objectList; //List that holds the object of ListObject of each item
+    private static ArrayAdapter<String> arrayAdapter;
+    private static boolean editCheck = false;
+    private static int editCheckIndex;
+    private static int currentPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,41 +52,42 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setTitle("The List of Lists");
         setSupportActionBar(toolbar);
 
-
-
         //Initialization
-        listView = (ListView)findViewById(R.id.listViewid);
-        editText = (EditText)findViewById(R.id.editTextid);
+        listView = (ListView) findViewById(R.id.listViewid);
+        editText = (EditText) findViewById(R.id.editTextid);
         addButton = (FloatingActionButton) findViewById(R.id.fab);
         removeButton = (FloatingActionButton) findViewById(R.id.fabrm);
         firstList = new ArrayList<>();
         secondList = new ArrayList<>();
-        testList = new ArrayList<>();//testing
-        arrayAdapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1, firstList);
+        arrayAdapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, firstList);
         intent = new Intent(this, NextActivity.class);
-        //itemObject = new ListObject("",secondList);
         objectList = new ArrayList<>();
-
-
         arrayAdapter.notifyDataSetChanged();
         listView.setAdapter(arrayAdapter);
 
+        clickToNextListListener(); //ItemClickListener for going to the next list item
+        editItemListener(); //ItemLongClickListener for going to editCheck
+        addButtonListener(); //AddButtonClickListener to add/change item
+        removeButtonListener(); //RemoveButtonClickListener to remove item
+
+    }
+
+    private void clickToNextListListener(){
         //OnItemClickLister
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ArrayList<String> sendArray = new ArrayList<String>();
-                //objectList.get(0).setListArray(testList); //testing
                 currentPosition = position;
                 sendArray = objectList.get(position).getListArray();
 
-                //intent.putExtra("KEY",objectList.get(position).getListTitle());
-                intent.putExtra("TITLEKEY",firstList.get(position));
-                intent.putExtra("ARRAYKEY", sendArray);
+                intent.putExtra(TITLE_KEY,firstList.get(position));
+                intent.putExtra(ARRAY_KEY, sendArray);
                 startActivityForResult(intent, REQUEST_CODE);
             }
         });
+    }
 
+    private void editItemListener(){
         //Edit list items
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -102,8 +103,9 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
 
-
+    private void addButtonListener(){
         //Floating Add button
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,11 +127,11 @@ public class MainActivity extends AppCompatActivity {
                     itemObject = new ListObject(currentText);
                     objectList.add(itemObject);
                 }
-
-
-
             }
         });
+    }
+
+    private void removeButtonListener(){
 
         //Floating Remove button
         removeButton.setOnClickListener(new View.OnClickListener() {
@@ -149,18 +151,16 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //super.onActivityResult(requestCode, resultCode, data);
         if(REQUEST_CODE == requestCode){
             if(resultCode == RESULT_OK){
                 secondList = data.getStringArrayListExtra("KEY2");
                 objectList.get(currentPosition).setListArray(secondList);
-                Log.d("MainActivity","Made it back");
+                Log.d("MainActivity", "Made it back");
                 Log.d("MainActivity","Check the returnList" + secondList.size());
 
             }
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

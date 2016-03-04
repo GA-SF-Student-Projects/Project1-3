@@ -2,13 +2,13 @@ package com.example.adao1.project1;
 
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -16,24 +16,23 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 public class NextActivity extends AppCompatActivity {
     public static final int RESULT_CODE = RESULT_OK;
-    private static ListView listView2;
-    private static EditText editText2;
-    private static View currentEditView2;
-    private static Drawable currentBackground2;
-    private static FloatingActionButton addButton2;
-    private static FloatingActionButton removeButton2;
+    private static ListView listView;
+    private static EditText editText;
+    private static View currentEditView;
+    private static Drawable currentBackground;
+    private static FloatingActionButton addButton;
+    private static FloatingActionButton removeButton;
+    private static Toolbar toolbar;
     private static ArrayList<String> secondList;
-    private static ArrayAdapter<String> arrayAdapter2;
-    private static ArrayList<ListObject> objectList2;
-    private static ListObject itemObject2;
-    private static boolean editCheck2 = false;
-    private static int editCheckIndex2;
+    private static ArrayAdapter<String> arrayAdapter;
+    private static ArrayList<ListObject> objectList;
+    private static ListObject listObject;
+    private static boolean editCheck = false;
+    private static int editCheckIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,23 +41,23 @@ public class NextActivity extends AppCompatActivity {
 
         String title = getIntent().getStringExtra(MainActivity.TITLE_KEY);
         //Toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(title);
         setSupportActionBar(toolbar);
 
         //Initialization
-        listView2 = (ListView)findViewById(R.id.listViewid);
-        editText2 = (EditText)findViewById(R.id.editTextid);
-        addButton2 = (FloatingActionButton) findViewById(R.id.fab);
-        removeButton2 = (FloatingActionButton) findViewById(R.id.fabrm);
+        listView = (ListView)findViewById(R.id.listViewid);
+        editText = (EditText)findViewById(R.id.editTextid);
+        addButton = (FloatingActionButton) findViewById(R.id.fab);
+        removeButton = (FloatingActionButton) findViewById(R.id.fabrm);
         secondList = new ArrayList<>();
-        objectList2 = new ArrayList<>();
+        objectList = new ArrayList<>();
         secondList = getIntent().getStringArrayListExtra(MainActivity.ARRAY_KEY);
-        arrayAdapter2 = new ArrayAdapter<>(NextActivity.this,android.R.layout.simple_list_item_1, secondList);
-        if(arrayAdapter2!=null) {
-            listView2.setAdapter(arrayAdapter2);
+        arrayAdapter = new ArrayAdapter<>(NextActivity.this,android.R.layout.simple_list_item_1, secondList);
+        if(arrayAdapter !=null) {
+            listView.setAdapter(arrayAdapter);
         }
-        arrayAdapter2.notifyDataSetChanged();
+        arrayAdapter.notifyDataSetChanged();
 
         strikeThroughListener();
         editListListener();
@@ -68,79 +67,92 @@ public class NextActivity extends AppCompatActivity {
 
     private void strikeThroughListener(){
         //OnItemClickLister
-        listView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //StrikeThrough
                 TextView row = (TextView) view;
-                if (!objectList2.get(position).isStrikeThrough()) {
+                if (!objectList.get(position).isStrikeThrough()) {
                     row.setPaintFlags(row.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                    objectList2.get(position).changeStrikeThrough(true);
+                    objectList.get(position).changeStrikeThrough(true);
                 } else {
                     row.setPaintFlags(0);
-                    objectList2.get(position).changeStrikeThrough(false);
+                    objectList.get(position).changeStrikeThrough(false);
                 }
             }
         });
     }
     private void editListListener(){
         //Edit list items
-        listView2.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                removeButton2.setVisibility(View.VISIBLE);
-                editText2.setText(secondList.get(position));
-                currentBackground2 = view.getBackground();
-                view.setBackgroundResource(android.R.color.holo_blue_light);
-                currentEditView2 = view;
-                editCheck2 = true;
-                editCheckIndex2 = position;
+                removeButton.setVisibility(View.VISIBLE);
+                editText.setText(secondList.get(position));
+                currentBackground = view.getBackground();
+                currentEditView = view;
+                changeEditcolor();
+                editCheck = true;
+                editCheckIndex = position;
                 return true;
             }
         });
     }
     private void addButtonListener(){
         //Floating Add button
-        addButton2.setOnClickListener(new View.OnClickListener() {
+        addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String currentText = editText2.getText().toString();
-                if (editCheck2) {
-                    secondList.set(editCheckIndex2, editText2.getText().toString());
-                    editCheck2 = false;
-                    arrayAdapter2.notifyDataSetChanged();
-                    editText2.setText("");
-                    currentEditView2.setBackground(currentBackground2);
-                    itemObject2 = new ListObject(currentText, false);
-                    objectList2.set(editCheckIndex2, itemObject2);
+                String currentText = editText.getText().toString();
+                if (editCheck) {
+                    secondList.set(editCheckIndex, editText.getText().toString());
+                    changeEditcolor();
+                    editCheck = false;
+                    arrayAdapter.notifyDataSetChanged();
+                    editText.setText("");
+                    listObject = new ListObject(currentText, false);
+                    objectList.set(editCheckIndex, listObject);
                 } else {
-                    secondList.add(editText2.getText().toString());
-                    arrayAdapter2.notifyDataSetChanged();
-                    editText2.setText("");
-                    itemObject2 = new ListObject(currentText, false);
-                    objectList2.add(itemObject2);
+                    secondList.add(editText.getText().toString());
+                    arrayAdapter.notifyDataSetChanged();
+                    editText.setText("");
+                    listObject = new ListObject(currentText, false);
+                    objectList.add(listObject);
                 }
             }
         });
     }
     private void removeButtonListener(){
         //Floating Remove button
-        removeButton2.setOnClickListener(new View.OnClickListener() {
+        removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TextView row = (TextView)currentEditView2;
+                TextView row = (TextView) currentEditView;
                 row.setPaintFlags(0);
-                secondList.remove(editCheckIndex2);
-                objectList2.remove(editCheckIndex2);
-                arrayAdapter2.notifyDataSetChanged();
-                removeButton2.setVisibility(View.INVISIBLE);
-                editCheck2 = false;
-                editText2.setText("");
-                currentEditView2.setBackground(currentBackground2);
+                secondList.remove(editCheckIndex);
+                objectList.remove(editCheckIndex);
+                arrayAdapter.notifyDataSetChanged();
+                removeButton.setVisibility(View.INVISIBLE);
+                changeEditcolor();
+                editCheck = false;
+                editText.setText("");
             }
         });
     }
 
+    public static void changeEditcolor(){
+        if(editCheck) {
+            removeButton.setColorFilter(Color.WHITE);
+            addButton.setColorFilter(Color.WHITE);
+            toolbar.setBackgroundResource(android.R.color.darker_gray);
+            currentEditView.setBackground(currentBackground);
+        }else{
+            removeButton.setColorFilter(Color.argb(255, 51, 181, 229));
+            addButton.setColorFilter(Color.argb(255, 51, 181, 229));
+            toolbar.setBackgroundResource(android.R.color.holo_blue_light);
+            currentEditView.setBackgroundResource(android.R.color.holo_blue_light);
+        }
+    }
     @Override
     public void onBackPressed() {
         Intent intent2 = getIntent();

@@ -81,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 currentPosition = position;
                 sendArray = objectList.get(position).getListArray();
-
                 intent.putExtra(TITLE_KEY,firstList.get(position));
                 intent.putExtra(ARRAY_KEY, sendArray);
                 startActivityForResult(intent, REQUEST_CODE);
@@ -94,17 +93,13 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                removeButton.setVisibility(View.VISIBLE);
-                removeButton.setColorFilter(Color.argb(255, 51, 181, 229));
-                addButton.setColorFilter(Color.argb(255,51, 181, 229));
-                toolbar.setBackgroundResource(android.R.color.holo_blue_light);
-                editText.setText(firstList.get(position));
+                removeButton.setVisibility(View.VISIBLE); //hide RM button
+                editText.setText(firstList.get(position)); //put the currently long clicked item in the edit text
                 currentBackground = view.getBackground();
-                view.setBackgroundResource(android.R.color.holo_blue_light);
                 currentEditView = view;
+                changeEditcolor();
                 editCheck = true;
                 editCheckIndex = position;
-
                 return true;
             }
         });
@@ -118,13 +113,10 @@ public class MainActivity extends AppCompatActivity {
                 String currentText = editText.getText().toString();
                 if (editCheck) {
                     firstList.set(editCheckIndex, currentText);
+                    changeEditcolor();
                     editCheck = false;
                     arrayAdapter.notifyDataSetChanged();
                     editText.setText("");
-                    removeButton.setColorFilter(Color.WHITE);
-                    addButton.setColorFilter(Color.WHITE);
-                    toolbar.setBackgroundResource(android.R.color.darker_gray);
-                    currentEditView.setBackground(currentBackground);
                     removeButton.setVisibility(View.INVISIBLE);
                     itemObject = new ListObject(currentText);
                     objectList.set(editCheckIndex, itemObject);
@@ -148,15 +140,25 @@ public class MainActivity extends AppCompatActivity {
                 firstList.remove(editCheckIndex);
                 arrayAdapter.notifyDataSetChanged();
                 removeButton.setVisibility(View.INVISIBLE);
+                changeEditcolor();
                 editCheck = false;
                 editText.setText("");
-                currentEditView.setBackground(currentBackground);
                 objectList.remove(editCheckIndex);
-                removeButton.setColorFilter(Color.WHITE);
-                addButton.setColorFilter(Color.WHITE);
-                toolbar.setBackgroundResource(android.R.color.darker_gray);
             }
         });
+    }
+    private void changeEditcolor(){
+        if(editCheck) {
+            removeButton.setColorFilter(Color.WHITE);
+            addButton.setColorFilter(Color.WHITE);
+            toolbar.setBackgroundResource(android.R.color.darker_gray);
+            currentEditView.setBackground(currentBackground);
+        }else{
+            removeButton.setColorFilter(Color.argb(255, 51, 181, 229));
+            addButton.setColorFilter(Color.argb(255, 51, 181, 229));
+            toolbar.setBackgroundResource(android.R.color.holo_blue_light);
+            currentEditView.setBackgroundResource(android.R.color.holo_blue_light);
+        }
     }
 
     @Override

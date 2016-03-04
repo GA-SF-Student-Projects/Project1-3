@@ -22,16 +22,18 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    static int REQUEST_CODE = 1;
     ListView listView;
     EditText editText;
     ListObject itemObject;//ListObject of each item of first list; holds Title and secondList
     ArrayList<String> firstList; //List of lists on the first page
     ArrayList<String> testList; //List of lists on the first page
-    //ArrayList<String> secondList;//The different lists on the second page
+    ArrayList<String> secondList;//The different lists on the second page
     ArrayList<ListObject> objectList; //List that holds the object of ListObject of each item
     ArrayAdapter<String> arrayAdapter;
     static boolean editCheck = false;
     static int editCheckIndex;
+    static int currentPosition;
     static View currentEditView;
     static Drawable currentBackground;
     FloatingActionButton addButton;
@@ -45,25 +47,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("The List of Lists");
+        setSupportActionBar(toolbar);
+
+
+
         //Initialization
         listView = (ListView)findViewById(R.id.listViewid);
         editText = (EditText)findViewById(R.id.editTextid);
         addButton = (FloatingActionButton) findViewById(R.id.fab);
         removeButton = (FloatingActionButton) findViewById(R.id.fabrm);
         firstList = new ArrayList<>();
-        //secondList = new ArrayList<>();
+        secondList = new ArrayList<>();
         testList = new ArrayList<>();//testing
         arrayAdapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1, firstList);
         intent = new Intent(this, NextActivity.class);
         //itemObject = new ListObject("",secondList);
         objectList = new ArrayList<>();
-
-
-        //Array to adapter to listView
-        fillArray();//testing
-        testList.add("yay");//testing
-        testList.add("it");//testing
-        testList.add("works"); //testing
 
 
         arrayAdapter.notifyDataSetChanged();
@@ -75,11 +77,13 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ArrayList<String> sendArray = new ArrayList<String>();
                 //objectList.get(0).setListArray(testList); //testing
+                currentPosition = position;
                 sendArray = objectList.get(position).getListArray();
 
                 //intent.putExtra("KEY",objectList.get(position).getListTitle());
-                intent.putExtra("KEY",sendArray);
-                startActivity(intent);
+                intent.putExtra("TITLEKEY",firstList.get(position));
+                intent.putExtra("ARRAYKEY", sendArray);
+                startActivityForResult(intent, REQUEST_CODE);
             }
         });
 
@@ -95,13 +99,10 @@ public class MainActivity extends AppCompatActivity {
                 editCheck = true;
                 editCheckIndex = position;
 
-                return false;
+                return true;
             }
         });
 
-        //Toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         //Floating Add button
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -146,11 +147,20 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    //Temp fill array
-    public void fillArray(){
-       // firstList.add("List element 1"); //testing
-        //objectList.add(0,new ListObject("List element 1"));//testing
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //super.onActivityResult(requestCode, resultCode, data);
+        if(REQUEST_CODE == requestCode){
+            if(resultCode == RESULT_OK){
+                secondList = data.getStringArrayListExtra("KEY2");
+                objectList.get(currentPosition).setListArray(secondList);
+                Log.d("MainActivity","Made it back");
+                Log.d("MainActivity","Check the returnList" + secondList.size());
+
+            }
+        }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

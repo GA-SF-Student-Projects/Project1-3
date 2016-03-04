@@ -13,6 +13,18 @@
     tools:context="com.example.adao1.project1.MainActivity"
     tools:showIn="@layout/activity_main">
 
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="37dp">
+        <EditText
+            android:id="@+id/editTextid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
+            android:background="#d3d3d3"/>
+    </RelativeLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="307dp"
@@ -30,15 +42,4 @@
 
         </LinearLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <EditText
-            android:id="@+id/editTextid"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentStart="true"
-            android:background="#d3d3d3"/>
-    </RelativeLayout>
 </LinearLayout>

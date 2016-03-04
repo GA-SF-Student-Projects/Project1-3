@@ -1,5 +1,6 @@
 package com.example.adao1.project1;
 
+import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -14,10 +15,12 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 public class NextActivity extends AppCompatActivity {
-
+    static int RESULT_CODE = RESULT_OK;
     ListView listView2;
     EditText editText2;
     ArrayList<String> secondList;
@@ -38,6 +41,12 @@ public class NextActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        String title = getIntent().getStringExtra("TITLEKEY");
+        //Toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(title);
+        setSupportActionBar(toolbar);
+
         //Initialization
         listView2 = (ListView)findViewById(R.id.listViewid);
         editText2 = (EditText)findViewById(R.id.editTextid);
@@ -45,13 +54,12 @@ public class NextActivity extends AppCompatActivity {
         removeButton2 = (FloatingActionButton) findViewById(R.id.fabrm);
         secondList = new ArrayList<>();
         objectList2 = new ArrayList<>();
-        secondList = getIntent().getStringArrayListExtra("KEY");
+        secondList = getIntent().getStringArrayListExtra("ARRAYKEY");
         arrayAdapter2 = new ArrayAdapter<String>(NextActivity.this,android.R.layout.simple_list_item_1, secondList);
-        Log.d("NextActivity","Check if secondList got it ");
-
-        listView2.setAdapter(arrayAdapter2);
+        if(arrayAdapter2!=null) {
+            listView2.setAdapter(arrayAdapter2);
+        }
         arrayAdapter2.notifyDataSetChanged();
-        Log.d("NextActivity", "Post-adapter");
 
 
         //OnItemClickLister
@@ -61,15 +69,15 @@ public class NextActivity extends AppCompatActivity {
 
 
                 //StrikeThrough
-                TextView row = (TextView)view;
-                if (!objectList2.get(position).isStrikeThrough()){
-                    row.setPaintFlags(row.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
+                TextView row = (TextView) view;
+                if (!objectList2.get(position).isStrikeThrough()) {
+                    row.setPaintFlags(row.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     objectList2.get(position).changeStrikeThrough(true);
-                }
-                else {
+                } else {
                     row.setPaintFlags(0);
                     objectList2.get(position).changeStrikeThrough(false);
                 }
+
             }
         });
 
@@ -84,15 +92,10 @@ public class NextActivity extends AppCompatActivity {
                 currentEditView2 = view;
                 editCheck2 = true;
                 editCheckIndex2 = position;
-
-                return false;
+                return true;
             }
         });
 
-
-        //Toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         //Floating Add button
         addButton2.setOnClickListener(new View.OnClickListener() {
@@ -124,6 +127,8 @@ public class NextActivity extends AppCompatActivity {
         removeButton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                TextView row = (TextView)currentEditView2;
+                row.setPaintFlags(0);
                 secondList.remove(editCheckIndex2);
                 objectList2.remove(editCheckIndex2);
                 arrayAdapter2.notifyDataSetChanged();
@@ -131,11 +136,21 @@ public class NextActivity extends AppCompatActivity {
                 editCheck2 = false;
                 editText2.setText("");
                 currentEditView2.setBackground(currentBackground2);
-
             }
         });
 
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent2 = getIntent();
+        if (intent2==null)return;
+        if(secondList==null)return;
+        Log.d("NextActivity","Lets check secondList "+secondList.get(0));
+        intent2.putExtra("KEY2", secondList);
+        setResult(RESULT_CODE, intent2);
+        finish();
     }
 }

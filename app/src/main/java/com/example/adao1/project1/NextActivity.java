@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -61,6 +62,7 @@ public class NextActivity extends AppCompatActivity {
 
         strikeThroughListener();
         editListListener();
+        enterListener();
         addButtonListener();
         removeButtonListener();
     }
@@ -95,6 +97,33 @@ public class NextActivity extends AppCompatActivity {
                 editCheck = true;
                 editCheckIndex = position;
                 return true;
+            }
+        });
+    }
+    private void enterListener(){
+        editText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    String currentText = editText.getText().toString();
+                    if (editCheck) {
+                        secondList.set(editCheckIndex, editText.getText().toString());
+                        changeEditcolor();
+                        editCheck = false;
+                        arrayAdapter.notifyDataSetChanged();
+                        editText.setText("");
+                        listObject = new ListObject(currentText, false);
+                        objectList.set(editCheckIndex, listObject);
+                    } else {
+                        secondList.add(editText.getText().toString());
+                        arrayAdapter.notifyDataSetChanged();
+                        editText.setText("");
+                        listObject = new ListObject(currentText, false);
+                        objectList.add(listObject);
+                    }
+                    return true;
+                }
+                return false;
             }
         });
     }
@@ -139,7 +168,6 @@ public class NextActivity extends AppCompatActivity {
             }
         });
     }
-
     public static void changeEditcolor(){
         if(editCheck) {
             removeButton.setColorFilter(Color.WHITE);

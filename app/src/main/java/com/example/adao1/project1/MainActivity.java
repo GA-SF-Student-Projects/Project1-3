@@ -10,6 +10,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -69,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         clickToNextListListener(); //ItemClickListener for going to the next list item
         editItemListener(); //ItemLongClickListener for going to editCheck
+        enterListener();
         addButtonListener(); //AddButtonClickListener to add/change item
         removeButtonListener(); //RemoveButtonClickListener to remove item
 
@@ -101,6 +103,35 @@ public class MainActivity extends AppCompatActivity {
                 editCheck = true;
                 editCheckIndex = position;
                 return true;
+            }
+        });
+    }
+
+    private void enterListener(){
+        editText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if((event.getAction()==KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)){
+                    String currentText = editText.getText().toString();
+                    if (editCheck) {
+                        firstList.set(editCheckIndex, currentText);
+                        changeEditcolor();
+                        editCheck = false;
+                        arrayAdapter.notifyDataSetChanged();
+                        editText.setText("");
+                        removeButton.setVisibility(View.INVISIBLE);
+                        itemObject = new ListObject(currentText);
+                        objectList.set(editCheckIndex, itemObject);
+                    } else {
+                        firstList.add(currentText);
+                        arrayAdapter.notifyDataSetChanged();
+                        editText.setText("");
+                        itemObject = new ListObject(currentText);
+                        objectList.add(itemObject);
+                    }
+                    return true;
+                }
+                return false;
             }
         });
     }

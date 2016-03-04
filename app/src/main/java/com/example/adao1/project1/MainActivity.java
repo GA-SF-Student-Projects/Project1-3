@@ -1,6 +1,7 @@
 package com.example.adao1.project1;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private static FloatingActionButton addButton;
     private static FloatingActionButton removeButton;
     private static Intent intent;
+    private static Toolbar toolbar;
     private static ListObject itemObject;//ListObject of each item of first list; holds Title and secondList
     private static ArrayList<String> firstList; //List of lists on the first page
     private static ArrayList<String> secondList;//The different lists on the second page
@@ -48,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //Toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("The List of Lists");
         setSupportActionBar(toolbar);
 
@@ -93,6 +95,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 removeButton.setVisibility(View.VISIBLE);
+                removeButton.setColorFilter(Color.argb(255, 51, 181, 229));
+                addButton.setColorFilter(Color.argb(255,51, 181, 229));
+                toolbar.setBackgroundResource(android.R.color.holo_blue_light);
                 editText.setText(firstList.get(position));
                 currentBackground = view.getBackground();
                 view.setBackgroundResource(android.R.color.holo_blue_light);
@@ -116,6 +121,9 @@ public class MainActivity extends AppCompatActivity {
                     editCheck = false;
                     arrayAdapter.notifyDataSetChanged();
                     editText.setText("");
+                    removeButton.setColorFilter(Color.WHITE);
+                    addButton.setColorFilter(Color.WHITE);
+                    toolbar.setBackgroundResource(android.R.color.darker_gray);
                     currentEditView.setBackground(currentBackground);
                     removeButton.setVisibility(View.INVISIBLE);
                     itemObject = new ListObject(currentText);
@@ -144,7 +152,9 @@ public class MainActivity extends AppCompatActivity {
                 editText.setText("");
                 currentEditView.setBackground(currentBackground);
                 objectList.remove(editCheckIndex);
-
+                removeButton.setColorFilter(Color.WHITE);
+                addButton.setColorFilter(Color.WHITE);
+                toolbar.setBackgroundResource(android.R.color.darker_gray);
             }
         });
     }
@@ -155,9 +165,6 @@ public class MainActivity extends AppCompatActivity {
             if(resultCode == RESULT_OK){
                 secondList = data.getStringArrayListExtra("KEY2");
                 objectList.get(currentPosition).setListArray(secondList);
-                Log.d("MainActivity", "Made it back");
-                Log.d("MainActivity","Check the returnList" + secondList.size());
-
             }
         }
     }

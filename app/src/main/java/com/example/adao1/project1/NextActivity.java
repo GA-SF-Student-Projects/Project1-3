@@ -1,5 +1,6 @@
 package com.example.adao1.project1;
 
+
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
@@ -149,4 +150,5 @@ public class NextActivity extends AppCompatActivity {
         setResult(RESULT_CODE, intent2);
         finish();
     }
+
 }
